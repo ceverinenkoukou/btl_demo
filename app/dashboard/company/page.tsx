@@ -200,14 +200,14 @@ export default function CompanyDashboardPage() {
       gradient: "from-amber-500 via-orange-500 to-yellow-400",
       shadow: "shadow-amber-300/50",
     },
-    {
-      label: "Chiffre d’affaires",
-      value: fmtXOF(stats.totalRevenue),
-      icon: <TrendingUp className="w-6 h-6" />,
-      trend: "+8%",
-      gradient: "from-emerald-600 via-green-500 to-teal-400",
-      shadow: "shadow-emerald-300/50",
-    },
+    // {
+    //   label: "Chiffre d’affaires",
+    //   value: fmtXOF(stats.totalRevenue),
+    //   icon: <TrendingUp className="w-6 h-6" />,
+    //   trend: "+8%",
+    //   gradient: "from-emerald-600 via-green-500 to-teal-400",
+    //   shadow: "shadow-emerald-300/50",
+    // },
     {
       label: "Goodies distribués",
       value: fmt(stats.goodiesDistributed),
@@ -215,6 +215,14 @@ export default function CompanyDashboardPage() {
       trend: `${fmt(stats.goodiesDistributed)} lots`,
       gradient: "from-violet-600 via-purple-500 to-fuchsia-400",
       shadow: "shadow-violet-300/50",
+    },
+    {
+      label: "Packs distribués",
+      value: fmt(stats.packsDistributed),
+      icon: <Package className="w-6 h-6" />,
+      trend: `${fmt(stats.packsDistributed)} lots`,
+      gradient: "from-blue-600 via-blue-400 to-cyan-300",
+      shadow: "shadow-blue-300/50",
     },
   ];
 
@@ -311,6 +319,29 @@ export default function CompanyDashboardPage() {
           trackColor="bg-red-100"
         />
       </div>
+      {/* ── KPI cards ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpis.map((kpi, i) => (
+          <div key={i}
+            className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${kpi.gradient} p-5 text-white shadow-xl ${kpi.shadow} hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-300 cursor-default`}
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.08),transparent)]" />
+            <div className="absolute -right-3 -bottom-3 w-20 h-20 rounded-full bg-white/10 blur-xl" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-10 h-10 bg-white/25 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  {kpi.icon}
+                </div>
+                <span className="flex items-center gap-0.5 text-xs font-semibold px-2 py-1 rounded-full bg-white/25">
+                  <ArrowUp className="w-3 h-3" />{kpi.trend}
+                </span>
+              </div>
+              <div className="text-2xl font-bold tracking-tight leading-tight">{kpi.value}</div>
+              <p className="text-white/80 text-xs mt-1 font-medium">{kpi.label}</p>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {/* ── Live indicator + Export buttons ── */}
       <div className="flex items-center justify-between flex-wrap gap-3 bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3">
@@ -371,14 +402,16 @@ export default function CompanyDashboardPage() {
             </div>
           </div>
           <div className="space-y-4">
-            <PromoProgressRow label="Bouteilles offertes" current={97}  target={106} colorBar="bg-blue-500"    colorText="text-blue-600"    trackColor="bg-blue-100"    />
-            <PromoProgressRow label="Goodies distribués" current={32}  target={35}  colorBar="bg-emerald-500" colorText="text-emerald-600" trackColor="bg-emerald-100" />
+            <PromoProgressRow label="Bouteilles offertes" current={0}  target={320} colorBar="bg-blue-500"    colorText="text-blue-600"    trackColor="bg-blue-100"    />
+            <PromoProgressRow label="Casiers offerts" current={0}  target={107}  colorBar="bg-emerald-500" colorText="text-emerald-600" trackColor="bg-emerald-100" />
+            <PromoProgressRow label="Goodies distribués" current={0}  target={960}  colorBar="bg-pink-500" colorText="text-pink-600" trackColor="bg-pink-100" />
+
           </div>
         </div>
       </div>
 
       {/* ── KPI cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, i) => (
           <div key={i}
             className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${kpi.gradient} p-5 text-white shadow-xl ${kpi.shadow} hover:-translate-y-1.5 hover:shadow-2xl transition-all duration-300 cursor-default`}
@@ -399,7 +432,7 @@ export default function CompanyDashboardPage() {
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* ── Daily chart ── */}
       <Card className="border-0 shadow-lg shadow-slate-100 rounded-2xl">
