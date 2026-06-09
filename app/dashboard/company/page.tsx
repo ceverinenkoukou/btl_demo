@@ -50,8 +50,8 @@ interface IActivity {
   dotBg: string; textColor: string; badgeBg: string;
 }
 
-const _GMS_SITES = ["Mont-Bouët", "Charbonnages", "Port-Gentil", "Franceville", "Oyem"];
-const _CHR_SITES = ["Fans Zone Angondjé", "Fans Zone Bambouchine"];
+const _GMS_SITES = ["Géant CKDO", "Super Gros (Carrefour SNI)", "Mbolo", "Super gros", "Prix import"];
+const _CHR_SITES = ["Radisson Blu", "LMB (Mindoubé)"];
 
 const _GMS_POOL = [
   { label: "Canette offerte",      icon: "🍺", dotBg: "bg-amber-500",  textColor: "text-amber-700",  badgeBg: "bg-amber-50"  },
@@ -105,8 +105,8 @@ export default function CompanyDashboardPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [selectedSite, setSelectedSite] = useState("Mont-Bouët");
-  const [selectedCHRSite, setSelectedCHRSite] = useState("Fans Zone Angondjé");
+  const [selectedSite, setSelectedSite] = useState("Géant CKDO");
+  const [selectedCHRSite, setSelectedCHRSite] = useState("Radisson Blu");
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [feed, setFeed] = useState<IActivity[]>([]);
   const stats = mock33ExportStats;
@@ -193,7 +193,7 @@ export default function CompanyDashboardPage() {
       shadow: "shadow-red-300/50",
     },
     {
-      label: "Ventes réalisées",
+      label: "Distributions réalisées",
       value: fmt(stats.totalSales),
       icon: <ShoppingCart className="w-6 h-6" />,
       trend: `${stats.objectiveSalesPct}% obj.`,
@@ -290,10 +290,10 @@ export default function CompanyDashboardPage() {
         </div>
       </div>
 
-      {/* ── Objectives progress (ventes uniquement) ── */}
+      {/* ── Objectives progress (Distributions uniquement) ── */}
       <div className="grid md:grid-cols-2 gap-4">
         <ProgressCard
-          label="Objectif Ventes GMS (1 140 ventes)"
+          label="Objectif distribution GMS (1 140 Distributions)"
           current={1050}
           objective={1140}
           pct={Math.round((1050 / 1140) * 100)}
@@ -302,7 +302,7 @@ export default function CompanyDashboardPage() {
           trackColor="bg-amber-100"
         />
         <ProgressCard
-          label="Objectif Ventes CHR LBV (320 ventes)"
+          label="Objectif distribution CHR LBV (320 Distributions)"
           current={292}
           objective={320}
           pct={Math.round((292 / 320) * 100)}
@@ -431,7 +431,7 @@ export default function CompanyDashboardPage() {
                   fill="url(#gTastings33)" name="Dégustations" dot={false}
                   activeDot={{ r: 6, fill: RED, stroke: "#fff", strokeWidth: 2 }} />
                 <Area type="monotone" dataKey="sales" stroke={AMBER} strokeWidth={3}
-                  fill="url(#gSales33)" name="Ventes" dot={false}
+                  fill="url(#gSales33)" name="Distributions" dot={false}
                   activeDot={{ r: 6, fill: AMBER, stroke: "#fff", strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
@@ -443,7 +443,7 @@ export default function CompanyDashboardPage() {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: AMBER }} />
-              <span className="text-xs text-muted-foreground font-medium">Ventes</span>
+              <span className="text-xs text-muted-foreground font-medium">Distributions</span>
             </div>
           </div>
         </CardContent>
@@ -468,7 +468,7 @@ export default function CompanyDashboardPage() {
                   <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
                   <Bar dataKey="tastings" name="Dégustations" fill={RED} radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="sales"    name="Ventes"       fill={AMBER} radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="sales"    name="Distributions"       fill={AMBER} radius={[4, 4, 0, 0]} />
                   <Legend wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }} />
                 </BarChart>
               </ResponsiveContainer>
@@ -540,7 +540,7 @@ export default function CompanyDashboardPage() {
                         <p className="font-bold text-red-600 text-sm">{fmt(siteStats.tastings)}</p>
                       </div>
                       <div className="flex-1 bg-white rounded-lg p-2 text-center border border-slate-100">
-                        <p className="text-xs text-muted-foreground">Ventes</p>
+                        <p className="text-xs text-muted-foreground">Distributions</p>
                         <p className="font-bold text-amber-600 text-sm">{fmt(siteStats.sales)}</p>
                       </div>
                     </div>
@@ -593,7 +593,7 @@ export default function CompanyDashboardPage() {
               <div key={i}>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm font-medium text-foreground truncate max-w-[55%]">{p.name}</span>
-                  <span className="text-sm font-bold text-red-600">{fmt(p.sales)} ventes</span>
+                  <span className="text-sm font-bold text-red-600">{fmt(p.sales)} Distributions</span>
                 </div>
                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div

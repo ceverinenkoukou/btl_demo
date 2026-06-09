@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { mockCampaigns, mockTastings, mockSales, mockCampaignTeam } from "@/lib/mock-data";
+import { mockCampaigns, mockTastings, mockSales, mockCampaignTeam, export33CampaignSites } from "@/lib/mock-data";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -23,6 +23,7 @@ import type {
   Campaign, Tasting, Sale, Gender, AgeRange, TasteRating, PurchaseIntent,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { Beer, Gift } from 'lucide-react';
 
 const GMS_CAMPAIGN_ID = "3";
 const CHR_CAMPAIGN_ID = "4";
@@ -74,6 +75,7 @@ export default function CampaignDetailPage() {
     has_purchased: false,
     quantity: 1,
     notes: "",
+    client_name: "",
   });
   const [gmsPromoType, setGmsPromoType] = useState<"canettes" | "packs">("canettes");
   const [goodieGiven, setGoodieGiven]   = useState(false);
@@ -102,6 +104,10 @@ export default function CampaignDetailPage() {
   const teamMembers = mockCampaignTeam.filter(t => t.campaign_id === id);
   const hostessMember = teamMembers.find(m => m.role === "hostess");
   const supervisorMember = teamMembers.find(m => m.role === "supervisor");
+
+  // Get hostess assigned site for this campaign
+  const hostessTeamMember = teamMembers.find(m => m.user_id === user?.id && m.role === "hostess");
+  const hostessSite = export33CampaignSites.find(s => s.id === hostessTeamMember?.site_id);
 
   // Stats
   const allTastings = mockTastings.filter(t => t.campaign_id === id);
@@ -186,6 +192,7 @@ export default function CampaignDetailPage() {
         has_purchased: false,
         quantity: 1,
         notes: "",
+        client_name: "",
       }));
       setGoodieGiven(false);
       setTimeout(() => setSubmitted(false), 4000);
@@ -199,8 +206,8 @@ export default function CampaignDetailPage() {
   if (!campaign) return null;
 
   const cfg = STATUS_CFG[campaign.status] ?? STATUS_CFG.draft;
-  const tastingPct = campaign.tasting_objective > 0
-    ? Math.min(100, Math.round((allTastings.length / campaign.tasting_objective) * 100))
+  const tastingPct = (campaign.tasting_objective ?? 0) > 0
+    ? Math.min(100, Math.round((allTastings.length / (campaign.tasting_objective ?? 1)) * 100))
     : 0;
   const salesPct = campaign.sales_objective > 0
     ? Math.min(100, Math.round((allSales.length / campaign.sales_objective) * 100))
@@ -268,9 +275,9 @@ export default function CampaignDetailPage() {
             {/* KPI chips */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
               {[
-                { label: "Dégustations", value: allTastings.length, sub: `/ ${campaign.tasting_objective}`, icon: "🍷" },
+                ...(!isGMSCampaign ? [{ label: "Dégustations", value: allTastings.length, sub: `/ ${campaign.tasting_objective ?? 0}`, icon: "🍷" }] : []),
                 { label: "Acheteurs",    value: purchasedCount,     sub: "ont acheté",                      icon: "🛒" },
-                { label: "Ventes valid.", value: validatedSales,    sub: `/ ${allSales.length}`,             icon: "✅" },
+                { label: "Distributions valid.", value: validatedSales,    sub: `/ ${allSales.length}`,             icon: "✅" },
                 { label: "Chiffre d'aff.", value: `${totalRevenue.toFixed(0)} €`, sub: "généré",            icon: "💰" },
               ].map((s, i) => (
                 <div key={i} className="bg-white/15 backdrop-blur-sm rounded-xl p-3.5 border border-white/20">
@@ -332,13 +339,15 @@ export default function CampaignDetailPage() {
                     <span>{campaign.zone?.name}{campaign.location_details ? ` — ${campaign.location_details}` : ""}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <UtensilsCrossed className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                  <span>Objectif : <strong className="text-foreground">{campaign.tasting_objective}</strong> dégustations</span>
-                </div>
+                {!isGMSCampaign && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <UtensilsCrossed className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <span>Objectif : <strong className="text-foreground">{campaign.tasting_objective ?? 0}</strong> dégustations</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <ShoppingCart className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  <span>Objectif : <strong className="text-foreground">{campaign.sales_objective}</strong> ventes</span>
+                  <span>Objectif : <strong className="text-foreground">{campaign.sales_objective}</strong> Distributions</span>
                 </div>
               </div>
             </div>
@@ -352,31 +361,33 @@ export default function CampaignDetailPage() {
                 Avancement des objectifs
               </h3>
               {/* Dégustations */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm">
-                    <UtensilsCrossed className="w-4 h-4 text-indigo-500" />
-                    <span className="font-medium text-foreground">Dégustations</span>
+              {!isGMSCampaign && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm">
+                      <UtensilsCrossed className="w-4 h-4 text-indigo-500" />
+                      <span className="font-medium text-foreground">Dégustations</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-bold text-indigo-700">{allTastings.length}</span>
+                      <span className="text-muted-foreground">/ {campaign.tasting_objective ?? 0}</span>
+                      <span className="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full font-semibold">{tastingPct}%</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="font-bold text-indigo-700">{allTastings.length}</span>
-                    <span className="text-muted-foreground">/ {campaign.tasting_objective}</span>
-                    <span className="text-xs px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full font-semibold">{tastingPct}%</span>
+                  <div className="h-3 rounded-full bg-indigo-50 overflow-hidden shadow-inner">
+                    <div
+                      className="h-full bg-gradient-to-r from-indigo-500 to-blue-400 rounded-full shadow-sm transition-all duration-700"
+                      style={{ width: `${tastingPct}%` }}
+                    />
                   </div>
                 </div>
-                <div className="h-3 rounded-full bg-indigo-50 overflow-hidden shadow-inner">
-                  <div
-                    className="h-full bg-gradient-to-r from-indigo-500 to-blue-400 rounded-full shadow-sm transition-all duration-700"
-                    style={{ width: `${tastingPct}%` }}
-                  />
-                </div>
-              </div>
-              {/* Ventes */}
+              )}
+              {/* Distributions */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm">
                     <ShoppingCart className="w-4 h-4 text-violet-500" />
-                    <span className="font-medium text-foreground">Ventes</span>
+                    <span className="font-medium text-foreground">Distributions</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="font-bold text-violet-700">{allSales.length}</span>
@@ -394,6 +405,7 @@ export default function CampaignDetailPage() {
             </div>
 
             {/* Recent tastings */}
+            {!isGMSCampaign && (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
@@ -450,6 +462,7 @@ export default function CampaignDetailPage() {
                 </div>
               )}
             </div>
+            )}
           </div>
 
           {/* ── Right (1/3) ── */}
@@ -562,14 +575,34 @@ export default function CampaignDetailPage() {
                 <span>{campaign.zone?.name}{campaign.location_details ? ` — ${campaign.location_details}` : ""}</span>
               </div>
             )}
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <UtensilsCrossed className="w-4 h-4 shrink-0 text-blue-400" />
-              <span>Objectif : {campaign.tasting_objective} dégustations</span>
-            </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <ShoppingCart className="w-4 h-4 shrink-0 text-emerald-400" />
-              <span>Objectif : {campaign.sales_objective} ventes</span>
-            </div>
+            {/* Objectifs GMS - sans dégustations */}
+            {isGMSCampaign ? (
+              <>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <ShoppingCart className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span>Objectif Distributions : <strong className="text-foreground">{campaign.sales_objective}</strong></span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Beer className="w-4 h-4 shrink-0 text-amber-400" />
+                  <span>Objectif canettes offertes : <strong className="text-foreground">{campaign.free_objective ?? 0}</strong></span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Gift className="w-4 h-4 shrink-0 text-violet-400" />
+                  <span>Objectif goodies : <strong className="text-foreground">{campaign.goodies_objective ?? 0}</strong></span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <UtensilsCrossed className="w-4 h-4 shrink-0 text-blue-400" />
+                  <span>Objectif : <strong className="text-foreground">{campaign.tasting_objective ?? 0}</strong> dégustations</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <ShoppingCart className="w-4 h-4 shrink-0 text-emerald-400" />
+                  <span>Objectif : <strong className="text-foreground">{campaign.sales_objective}</strong> Distributions</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -598,6 +631,19 @@ export default function CampaignDetailPage() {
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs uppercase tracking-wide">Hôtesse</Label>
                 <div className="h-10 px-3 flex items-center rounded-xl border border-input bg-muted/40 text-sm font-medium">{user?.full_name}</div>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs  tracking-wide">Nom du client </Label>
+                <Input
+                  value={formData.client_name}
+                  onChange={e => setFormData({ ...formData, client_name: e.target.value })}
+                  placeholder="Nom du client"
+                  className="h-10"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-muted-foreground text-xs uppercase tracking-wide">Site de vente de l'hôtesse</Label>
+                <div className="h-10 px-3 flex items-center rounded-xl border border-input bg-muted/40 text-sm font-medium">{hostessSite?.name || "—"}</div>
               </div>
             </div>
             {/* ── Produit : read-only ── */}
@@ -639,7 +685,9 @@ export default function CampaignDetailPage() {
                     <div className="space-y-0.5 text-xs text-amber-700">
                       <p>🍺 4 CAN achetées → 1 CAN offerte</p>
                       <p>🎟 6 CAN achetées → 1 ticket tombola</p>
+                      <p>🏆 1 pack acheté → 1 ticket de tombola</p>
                       <p>📦 4 packs achetés → 1 pack offert + 1 goodie</p>
+                      
                     </div>
                   ) : (
                     <div className="space-y-0.5 text-xs text-amber-700">
@@ -706,6 +754,10 @@ export default function CampaignDetailPage() {
                           <span className="text-sm text-green-700">🎁 Goodies distribués</span>
                           <span className={cn("text-2xl font-bold", (promoGains.goodies ?? 0) > 0 ? "text-violet-600" : "text-slate-300")}>{promoGains.goodies ?? 0}</span>
                         </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-green-700">🎟 Tickets tombola</span>
+                          <span className={cn("text-2xl font-bold", (promoGains.ticketsTombola ?? 0) > 0 ? "text-pink-600" : "text-slate-300")}>{promoGains.ticketsTombola ?? 0}</span>
+                        </div>
                       </>)}
                       {isCHRCampaign && (<>
                         <div className="flex items-center justify-between">
@@ -720,7 +772,7 @@ export default function CampaignDetailPage() {
                     </div>
                   </div>
                 )}
-                {isGMSCampaign && (
+                {/* {isGMSCampaign && (
                   <div className="space-y-1.5">
                     <Label>Goodie distribué</Label>
                     <div className="grid grid-cols-2 gap-3">
@@ -736,7 +788,7 @@ export default function CampaignDetailPage() {
                       </button>
                     </div>
                   </div>
-                )}
+                )} */}
               </>
             ) : (
               <>
@@ -797,10 +849,18 @@ export default function CampaignDetailPage() {
               <Textarea value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Commentaires, remarques du client..." rows={3} />
             </div>
-            <Button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700" disabled={saving}>
-              {saving
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700" 
+                  disabled={saving}
+                >              {saving
                 ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Enregistrement...</>
-                : <><UtensilsCrossed className="w-4 h-4 mr-2" />{isPromoCampaign ? "Enregistrer l'activation" : "Enregistrer la dégustation"}</>}
+                :<>
+    <UtensilsCrossed className="w-4 h-4 mr-2 text-white" />
+    <span className="text-white">
+      {isPromoCampaign ? "Enregistrer le client" : "Enregistrer la dégustation"}
+    </span>
+  </>}
             </Button>
           </form>
         </div>
@@ -814,7 +874,7 @@ export default function CampaignDetailPage() {
           </div>
           <div>
             <p className="text-sm font-semibold text-foreground">
-              {tastings.length} dégustation{tastings.length > 1 ? "s" : ""} enregistrée{tastings.length > 1 ? "s" : ""}
+              {tastings.length} Distribution{tastings.length > 1 ? "s" : ""} enregistrée{tastings.length > 1 ? "s" : ""}
             </p>
             <p className="text-xs text-muted-foreground">
               {tastings.filter(t => t.has_purchased).length} achat{tastings.filter(t => t.has_purchased).length > 1 ? "s" : ""} réalisé{tastings.filter(t => t.has_purchased).length > 1 ? "s" : ""}
@@ -832,15 +892,17 @@ export default function CampaignDetailPage() {
             </div>
             Suivi de la campagne
           </h3>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Dégustations enregistrées</span>
-              <span className="font-semibold">{allTastings.length} / {campaign.tasting_objective}</span>
+          {!isGMSCampaign && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Dégustations enregistrées</span>
+                <span className="font-semibold">{allTastings.length} / {campaign.tasting_objective ?? 0}</span>
+              </div>
+              <div className="h-3 rounded-full bg-teal-50 overflow-hidden shadow-inner">
+                <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-700" style={{ width: `${tastingPct}%` }} />
+              </div>
             </div>
-            <div className="h-3 rounded-full bg-teal-50 overflow-hidden shadow-inner">
-              <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-700" style={{ width: `${tastingPct}%` }} />
-            </div>
-          </div>
+          )}
         </div>
       )}
     </div>

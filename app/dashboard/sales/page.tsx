@@ -116,7 +116,7 @@ export default function SalesPage() {
   const handleValidateAll = async () => {
     const unvalidatedSales = filteredSales.filter((s) => !s.validated);
     if (unvalidatedSales.length === 0) {
-      toast.info("Toutes les ventes sont déjà validées");
+      toast.info("Toutes les Distributions sont déjà validées");
       return;
     }
 
@@ -149,8 +149,8 @@ export default function SalesPage() {
 
     const ws = XLSX.utils.json_to_sheet(exportData);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Ventes");
-    XLSX.writeFile(wb, `ventes_${new Date().toISOString().split("T")[0]}.xlsx`);
+    XLSX.utils.book_append_sheet(wb, ws, "Distributions");
+    XLSX.writeFile(wb, `Distributions_${new Date().toISOString().split("T")[0]}.xlsx`);
     toast.success("Export téléchargé");
   };
 
@@ -217,7 +217,7 @@ export default function SalesPage() {
         <tr class="sub"><td colspan="4" class="r">Sous-total ${camp.name}</td><td class="r b">${campRev.toLocaleString("fr-FR")} F</td></tr>
       `;
     }).join("");
-    const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Rapport Ventes – ${company?.name ?? "Entreprise"}</title><style>
+    const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Rapport Distributions – ${company?.name ?? "Entreprise"}</title><style>
       *{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:12px;color:#1e293b;padding:28px}
       .hdr{background:linear-gradient(135deg,#065f46,#0d9488);color:#fff;padding:20px 24px;border-radius:10px;margin-bottom:20px}
       .hdr h1{font-size:20px;font-weight:800}.hdr p{opacity:.7;margin-top:3px;font-size:11px}
@@ -234,9 +234,9 @@ export default function SalesPage() {
       .foot{margin-top:20px;text-align:center;color:#94a3b8;font-size:10px}
       @media print{body{padding:12px}}
     </style></head><body>
-      <div class="hdr"><h1>${company?.name ?? "Entreprise"}</h1><p>Rapport de ventes · Exporté le ${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p></div>
+      <div class="hdr"><h1>${company?.name ?? "Entreprise"}</h1><p>Rapport de Distributions · Exporté le ${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p></div>
       <div class="kpis">
-        <div class="kpi"><div class="v">${companySales.length}</div><div class="l">Total ventes</div></div>
+        <div class="kpi"><div class="v">${companySales.length}</div><div class="l">Total Distributions</div></div>
         <div class="kpi"><div class="v">${totalValidated}</div><div class="l">Validées</div></div>
         <div class="kpi"><div class="v">${companySales.length - totalValidated}</div><div class="l">En attente</div></div>
         <div class="kpi"><div class="v">${totalRevenue.toLocaleString("fr-FR")} F</div><div class="l">Chiffre d'affaires</div></div>
@@ -273,7 +273,7 @@ export default function SalesPage() {
                     <div className="w-9 h-9 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center">
                       <ShoppingCart className="w-4 h-4" />
                     </div>
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Ventes</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Distributions</h1>
                   </div>
                   <p className="text-white/65 text-sm ml-12">Organisées par entreprise et campagne</p>
                 </div>
@@ -289,7 +289,7 @@ export default function SalesPage() {
               {/* KPI chips */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { icon: "🛒", label: "Total ventes",     value: stats.total,          sub: "enregistrées" },
+                  { icon: "🛒", label: "Total Distributions",     value: stats.total,          sub: "enregistrées" },
                   { icon: "✅", label: "Validées",          value: stats.validated,      sub: "confirmées"   },
                   { icon: "⏳", label: "En attente",        value: stats.pending,        sub: "à valider"    },
                   { icon: "💰", label: "Chiffre d'aff.",    value: fmt(stats.revenue),   sub: ""             },
@@ -403,7 +403,7 @@ export default function SalesPage() {
                           {/* Campaign mini-stats */}
                           <div className="grid grid-cols-4 gap-2 mb-3">
                             {[
-                              { label: "Ventes",     value: campSales.length, color: "text-emerald-700", bg: "bg-emerald-50",  border: "border-emerald-100" },
+                              { label: "Distributions",     value: campSales.length, color: "text-emerald-700", bg: "bg-emerald-50",  border: "border-emerald-100" },
                               { label: "Validées",   value: campValidated,    color: "text-teal-700",    bg: "bg-teal-50",     border: "border-teal-100"    },
                               { label: "En attente", value: campPending,      color: "text-amber-700",   bg: "bg-amber-50",    border: "border-amber-100"   },
                               { label: "Taux valid.", value: `${convRate}%`,  color: "text-cyan-700",    bg: "bg-cyan-50",     border: "border-cyan-100"    },
@@ -503,8 +503,8 @@ export default function SalesPage() {
         <>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Ventes</h1>
-              <p className="text-muted-foreground mt-1">Gérez et validez les ventes de la journée</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Distributions</h1>
+              <p className="text-muted-foreground mt-1">Gérez et validez les Distributions de la journée</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" onClick={handleExport}><Download className="w-4 h-4 mr-2" />Exporter</Button>
@@ -519,7 +519,7 @@ export default function SalesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-foreground">{stats.total}</div>
-            <p className="text-sm text-muted-foreground">Total ventes</p>
+            <p className="text-sm text-muted-foreground">Total Distributions</p>
           </CardContent>
         </Card>
         <Card>
@@ -572,7 +572,7 @@ export default function SalesPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <ShoppingCart className="w-5 h-5 text-primary" />
-              {isHostess ? "Mes ventes" : "Ventes du jour"}
+              {isHostess ? "Mes Distributions" : "Distributions du jour"}
             </CardTitle>
             {isHostess && (
               <Button variant="outline" size="sm" onClick={handleExport}>
@@ -800,7 +800,7 @@ export default function SalesPage() {
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div className="rounded-lg bg-muted/50 p-3">
                       <p className="text-xl font-bold text-foreground">{campaignSales.length}</p>
-                      <p className="text-xs text-muted-foreground">Ventes</p>
+                      <p className="text-xs text-muted-foreground">Distributions</p>
                     </div>
                     <div className="rounded-lg bg-muted/50 p-3">
                       <TrendingUp className="w-4 h-4 text-primary mx-auto mb-1" />

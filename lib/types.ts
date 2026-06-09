@@ -71,7 +71,9 @@ export interface Campaign {
   zone_id?: string;
   location_details?: string;
   sales_objective: number;
-  tasting_objective: number;
+  tasting_objective?: number;
+  free_objective?: number;
+  goodies_objective?: number;
   start_date: string;
   end_date: string;
   status: CampaignStatus;

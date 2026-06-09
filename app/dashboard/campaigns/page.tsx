@@ -25,6 +25,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Campaign, Company, Zone, CampaignStatus, CampaignTeamMember } from "@/lib/types";
 
+import { Gift, Beer, Wine } from 'lucide-react';
+
+const GMS_CAMPAIGN_ID = "3";
+const CHR_CAMPAIGN_ID = "4";
+
 const STATUS_CFG: Record<CampaignStatus, { label: string; badge: string; strip: string }> = {
   draft:     { label: "Brouillon",  badge: "bg-slate-100 text-slate-600 border border-slate-200",         strip: "from-slate-400 to-slate-300" },
   planned:   { label: "Planifiée",  badge: "bg-blue-100 text-blue-700 border border-blue-200",            strip: "from-blue-500 to-cyan-400" },
@@ -67,6 +72,8 @@ export default function CampaignsPage() {
     location_details: "",
     sales_objective: 0,
     tasting_objective: 0,
+    free_objective: 0,
+    goodies_objective: 0,
     start_date: "",
     end_date: "",
     status: "draft" as CampaignStatus,
@@ -151,6 +158,8 @@ export default function CampaignsPage() {
         location_details: "",
         sales_objective: 0,
         tasting_objective: 0,
+        free_objective: 0,
+        goodies_objective: 0,
         start_date: "",
         end_date: "",
         status: "draft",
@@ -227,12 +236,22 @@ export default function CampaignsPage() {
       </div>
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label>Objectif ventes</Label>
+          <Label>Objectif Distributions</Label>
           <Input type="number" min="0" value={formData.sales_objective} onChange={e => setFormData({ ...formData, sales_objective: parseInt(e.target.value) || 0 })} />
         </div>
         <div className="space-y-2">
           <Label>Objectif dégustations</Label>
           <Input type="number" min="0" value={formData.tasting_objective} onChange={e => setFormData({ ...formData, tasting_objective: parseInt(e.target.value) || 0 })} />
+        </div>
+      </div>
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label>Objectif canettes offertes</Label>
+          <Input type="number" min="0" value={formData.free_objective} onChange={e => setFormData({ ...formData, free_objective: parseInt(e.target.value) || 0 })} />
+        </div>
+        <div className="space-y-2">
+          <Label>Objectif goodies</Label>
+          <Input type="number" min="0" value={formData.goodies_objective} onChange={e => setFormData({ ...formData, goodies_objective: parseInt(e.target.value) || 0 })} />
         </div>
       </div>
       <div className="grid md:grid-cols-2 gap-4">
@@ -398,7 +417,7 @@ export default function CampaignsPage() {
             const { hostess, supervisor } = getTeam(campaign.id);
             const tastingsDone = mockTastings.filter(t => t.campaign_id === campaign.id).length;
             const salesDone = mockSales.filter(s => s.campaign_id === campaign.id).length;
-            const tastingPct = campaign.tasting_objective > 0 ? Math.min(100, Math.round((tastingsDone / campaign.tasting_objective) * 100)) : 0;
+            const tastingPct = (campaign.tasting_objective ?? 0) > 0 ? Math.min(100, Math.round((tastingsDone / (campaign.tasting_objective ?? 1)) * 100)) : 0;
             const salesPct = campaign.sales_objective > 0 ? Math.min(100, Math.round((salesDone / campaign.sales_objective) * 100)) : 0;
 
             return (
@@ -442,29 +461,90 @@ export default function CampaignsPage() {
                     )}
                   </div>
 
-                  {/* Progress objectives */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-indigo-50 rounded-xl p-3">
-                      <div className="flex items-center gap-1 mb-1.5">
-                        <ShoppingCart className="w-3 h-3 text-indigo-500" />
-                        <span className="text-xs text-indigo-600 font-medium">Ventes</span>
+                  {/* Progress objectives - adaptés selon le type de campagne */}
+                  {campaign.id === GMS_CAMPAIGN_ID ? (
+                    // GMS: Distributions, Canettes offertes, Goodies
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-indigo-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <ShoppingCart className="w-3 h-3 text-indigo-500" />
+                          <span className="text-xs text-indigo-600 font-medium">Distributions</span>
+                        </div>
+                        <div className="text-lg font-bold text-indigo-700">{salesDone}<span className="text-xs font-normal text-indigo-400">/{campaign.sales_objective}</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-indigo-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-indigo-500 to-blue-400 rounded-full transition-all duration-700" style={{ width: `${salesPct}%` }} />
+                        </div>
                       </div>
-                      <div className="text-lg font-bold text-indigo-700">{salesDone}<span className="text-xs font-normal text-indigo-400">/{campaign.sales_objective}</span></div>
-                      <div className="mt-1.5 h-1.5 rounded-full bg-indigo-100 overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-indigo-500 to-blue-400 rounded-full transition-all duration-700" style={{ width: `${salesPct}%` }} />
+                      <div className="bg-amber-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <Beer className="w-3 h-3 text-amber-500" />
+                          <span className="text-xs text-amber-600 font-medium">Offertes</span>
+                        </div>
+                        <div className="text-lg font-bold text-amber-700">{Math.floor(salesDone / 4)}<span className="text-xs font-normal text-amber-400">/{campaign.free_objective ?? 315}</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-amber-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-700" style={{ width: `${campaign.free_objective && campaign.free_objective > 0 ? Math.min(100, Math.round((Math.floor(salesDone / 4) / campaign.free_objective) * 100)) : 0}%` }} />
+                        </div>
+                      </div>
+                      <div className="bg-violet-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <Gift className="w-3 h-3 text-violet-500" />
+                          <span className="text-xs text-violet-600 font-medium">Goodies</span>
+                        </div>
+                        <div className="text-lg font-bold text-violet-700">{Math.floor(salesDone / 6)}<span className="text-xs font-normal text-violet-400">/{campaign.goodies_objective ?? 720}</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-violet-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-violet-500 to-purple-400 rounded-full transition-all duration-700" style={{ width: `${campaign.goodies_objective && campaign.goodies_objective > 0 ? Math.min(100, Math.round((Math.floor(salesDone / 6) / campaign.goodies_objective) * 100)) : 0}%` }} />
+                        </div>
                       </div>
                     </div>
-                    <div className="bg-violet-50 rounded-xl p-3">
-                      <div className="flex items-center gap-1 mb-1.5">
-                        <UtensilsCrossed className="w-3 h-3 text-violet-500" />
-                        <span className="text-xs text-violet-600 font-medium">Dégustations</span>
+                  ) : campaign.id === CHR_CAMPAIGN_ID ? (
+                    // CHR: Bouteilles vendues, Bouteilles offertes
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-indigo-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <Wine className="w-3 h-3 text-indigo-500" />
+                          <span className="text-xs text-indigo-600 font-medium">Bouteilles</span>
+                        </div>
+                        <div className="text-lg font-bold text-indigo-700">{salesDone}<span className="text-xs font-normal text-indigo-400">/{campaign.sales_objective}</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-indigo-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-indigo-500 to-blue-400 rounded-full transition-all duration-700" style={{ width: `${salesPct}%` }} />
+                        </div>
                       </div>
-                      <div className="text-lg font-bold text-violet-700">{tastingsDone}<span className="text-xs font-normal text-violet-400">/{campaign.tasting_objective}</span></div>
-                      <div className="mt-1.5 h-1.5 rounded-full bg-violet-100 overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-violet-500 to-purple-400 rounded-full transition-all duration-700" style={{ width: `${tastingPct}%` }} />
+                      <div className="bg-rose-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <Gift className="w-3 h-3 text-rose-500" />
+                          <span className="text-xs text-rose-600 font-medium">Offertes</span>
+                        </div>
+                        <div className="text-lg font-bold text-rose-700">{Math.floor(salesDone / 3)}<span className="text-xs font-normal text-rose-400">/est.</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-rose-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-rose-500 to-pink-400 rounded-full transition-all duration-700" style={{ width: `${Math.min(100, Math.round((Math.floor(salesDone / 3) / Math.max(1, Math.floor(campaign.sales_objective / 3))) * 100))}%` }} />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    // Campagnes standard: Distributions et Dégustations
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-indigo-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <ShoppingCart className="w-3 h-3 text-indigo-500" />
+                          <span className="text-xs text-indigo-600 font-medium">Distributions</span>
+                        </div>
+                        <div className="text-lg font-bold text-indigo-700">{salesDone}<span className="text-xs font-normal text-indigo-400">/{campaign.sales_objective}</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-indigo-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-indigo-500 to-blue-400 rounded-full transition-all duration-700" style={{ width: `${salesPct}%` }} />
+                        </div>
+                      </div>
+                      <div className="bg-violet-50 rounded-xl p-3">
+                        <div className="flex items-center gap-1 mb-1.5">
+                          <UtensilsCrossed className="w-3 h-3 text-violet-500" />
+                          <span className="text-xs text-violet-600 font-medium">Dégustations</span>
+                        </div>
+                        <div className="text-lg font-bold text-violet-700">{tastingsDone}<span className="text-xs font-normal text-violet-400">/{campaign.tasting_objective ?? 0}</span></div>
+                        <div className="mt-1.5 h-1.5 rounded-full bg-violet-100 overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-violet-500 to-purple-400 rounded-full transition-all duration-700" style={{ width: `${tastingPct}%` }} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Team */}
                   <div className="border-t border-slate-100 pt-3 grid grid-cols-2 gap-2">

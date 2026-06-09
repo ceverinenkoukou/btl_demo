@@ -129,7 +129,9 @@ export default function LoginPage() {
                   { label: "🛡️ Admin",           email: "admin@example.com" },
                   { label: "🍺 33 Export (Sobraga)", email: "sobraga@33export.ga" },
                   { label: "👁️ Superviseur",       email: "supervisor@example.com" },
-                  { label: "💃 Hôtesse",           email: "hostess@example.com" },
+                  { label: "💃 Hôtesse'GMS)",           email: "hostess@example.com" },
+                  { label: "💃 Hôtesse'CHR)",           email: "hotesse1.chr@sobraga.ga" },
+
                 ].map((acc) => (
                   <button
                     key={acc.email}

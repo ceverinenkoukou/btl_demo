@@ -43,7 +43,7 @@ export default function HomePage() {
               Gérez vos campagnes <span className="text-primary">BTL</span> en temps réel
             </h1>
             <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl text-pretty">
-              Suivi instantané des dégustations, ventes et performances. 
+              Suivi instantané des dégustations, Distributions et performances. 
               Optimisez vos actions terrain avec des données précises et exploitables.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
@@ -89,7 +89,7 @@ export default function HomePage() {
             <FeatureCard 
               icon={<BarChart3 className="w-6 h-6" />}
               title="Statistiques temps réel"
-              description="Visualisez conversions, ventes et dégustations avec des graphiques détaillés"
+              description="Visualisez conversions, Distributions et dégustations avec des graphiques détaillés"
             />
             <FeatureCard 
               icon={<TrendingUp className="w-6 h-6" />}

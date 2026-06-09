@@ -95,6 +95,7 @@ export default function TastingsPage() {
     purchase_intent: "" as PurchaseIntent | "",
     has_purchased: false,
     quantity: 1,
+    client_id: "",
     notes: "",
   });
   const [gmsPromoType, setGmsPromoType] = useState<"canettes" | "packs">("canettes");
@@ -207,6 +208,7 @@ export default function TastingsPage() {
         has_purchased: false,
         quantity: 1,
         notes: "",
+        client_id: "",
       });
       setGoodieGiven(false);
       fetchData();
@@ -556,6 +558,7 @@ export default function TastingsPage() {
                     <div className="space-y-0.5 text-xs text-amber-700">
                       <p>🍺 4 CAN achetées → 1 CAN offerte</p>
                       <p>🎟 6 CAN achetées → 1 ticket tombola</p>
+                      <p>🏆 1 pack acheté → 1 ticket de tombola</p>
                       <p>📦 4 packs achetés → 1 pack offert + 1 goodie</p>
                     </div>
                   ) : (

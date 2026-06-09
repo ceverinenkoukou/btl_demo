@@ -1,7 +1,7 @@
 {
   "name": "BTL Marketing - FreshUp",
   "short_name": "BTL FreshUp",
-  "description": "Application de suivi des campagnes BTL, dégustations et ventes",
+  "description": "Application de suivi des campagnes BTL, dégustations et Distributions",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",

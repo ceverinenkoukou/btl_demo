@@ -360,9 +360,10 @@ export const export33Campaign: Campaign = {
   company_id: "2",
   name: "Animation 33 Export GMS",
   description: "Animation GMS – Achat avec gain sur la 33 Export CAN 33cl. 4 CAN achetées = 1 CAN offerte / 6 CAN achetées = 1 tirage. Du mercredi au samedi, 24 Juin au 11 Juillet (12 jours animés). 10 Hôtesses VAC sur 5 PDV.",
-  location_details: "5 PDV : Libreville Mont-Bouët, Libreville Charbonnages, Port-Gentil, Franceville, Oyem",
+  location_details: "5 PDV : Géant CKDO, Super Gros (Carrefour SNI), Mbolo, Super gros, Prix import",
   sales_objective: 1140,
-  tasting_objective: 0,
+  free_objective: 315 ,
+  goodies_objective: 720,
   start_date: "2025-06-24",
   end_date: "2025-07-11",
   status: "active",
@@ -377,11 +378,11 @@ export const export33Campaign: Campaign = {
 
 // Sites de la campagne 33 Export (un par zone)
 export const export33CampaignSites: CampaignSite[] = [
-  { id: "s1", campaign_id: "3", zone_id: "3", name: "Libreville - Mont-Bouët",     zone: gabonZones[0] },
-  { id: "s2", campaign_id: "3", zone_id: "4", name: "Libreville - Charbonnages",  zone: gabonZones[1] },
-  { id: "s3", campaign_id: "3", zone_id: "5", name: "Port-Gentil - Centre",       zone: gabonZones[2] },
-  { id: "s4", campaign_id: "3", zone_id: "6", name: "Franceville",                zone: gabonZones[3] },
-  { id: "s5", campaign_id: "3", zone_id: "7", name: "Oyem - Marché central",      zone: gabonZones[4] },
+  { id: "s1", campaign_id: "3", zone_id: "3", name: "Géant CKDO",              zone: gabonZones[0] },
+  { id: "s2", campaign_id: "3", zone_id: "4", name: "Super Gros (Carrefour SNI)", zone: gabonZones[1] },
+  { id: "s3", campaign_id: "3", zone_id: "5", name: "Mbolo",                   zone: gabonZones[2] },
+  { id: "s4", campaign_id: "3", zone_id: "6", name: "Super gros",              zone: gabonZones[3] },
+  { id: "s5", campaign_id: "3", zone_id: "7", name: "Prix import",             zone: gabonZones[4] },
 ];
 
 // GMS équipe : Jean-Marc (5) couvre s1+s2+s5, Hervé (6) couvre s3+s4. 2 hôtesses par PDV.
@@ -414,7 +415,7 @@ export const export33CampaignCHR: Campaign = {
   company_id: "2",
   name: "Animation 33 Export Coupe du Monde CHR LBV",
   description: "Animation CHR LBV – Achat avec gain sur la 33 Export VC 33cl. 3 bouteilles achetées = 1 bouteille offerte / 9 bouteilles achetées = 1 tirage. 2 grandes Fans Zones à Libreville, 16 juin au 19 juillet (16 jours animés). 8 Hôtesses CHR.",
-  location_details: "2 grandes Fans Zones à Libreville : Angondjé & Bambouchine",
+  location_details: "2 sites : Radisson Blu, LMB (Mindoubé)",
   sales_objective: 320,
   tasting_objective: 0,
   start_date: "2025-06-16",
@@ -430,8 +431,8 @@ export const export33CampaignCHR: Campaign = {
 };
 
 export const export33CampaignSitesCHR: CampaignSite[] = [
-  { id: "s6", campaign_id: "4", zone_id: "8", name: "LBV - Fans Zone Angondjé",    zone: gabonZones[5] },
-  { id: "s7", campaign_id: "4", zone_id: "9", name: "LBV - Fans Zone Bambouchine", zone: gabonZones[6] },
+  { id: "s6", campaign_id: "4", zone_id: "8", name: "Radisson Blu",  zone: gabonZones[5] },
+  { id: "s7", campaign_id: "4", zone_id: "9", name: "LMB (Mindoubé)", zone: gabonZones[6] },
 ];
 
 // CHR équipe : Aurélien (17) supervise les 2 fans zones. 4 hôtesses par zone.
@@ -452,15 +453,15 @@ export const export33CampaignTeamCHR: CampaignTeamMember[] = [
 
 // hostess → site principal (pour les dégustations générées)
 const hostessSiteMapGMS: Record<string, string> = {
-  "7":  "s1", "8":  "s1",  // s1 Mont-Bouët
-  "9":  "s2", "10": "s2",  // s2 Charbonnages
-  "11": "s3", "12": "s3",  // s3 Port-Gentil
-  "13": "s4", "14": "s4",  // s4 Franceville
-  "15": "s5", "16": "s5",  // s5 Oyem
+  "7":  "s1", "8":  "s1",  // s1 Géant CKDO
+  "9":  "s2", "10": "s2",  // s2 Super Gros (Carrefour SNI)
+  "11": "s3", "12": "s3",  // s3 Mbolo
+  "13": "s4", "14": "s4",  // s4 Super gros
+  "15": "s5", "16": "s5",  // s5 Prix import
 };
 const hostessSiteMapCHR: Record<string, string> = {
-  "18": "s6", "19": "s6", "20": "s6", "21": "s6",  // s6 Angondjé
-  "22": "s7", "23": "s7", "24": "s7", "25": "s7",  // s7 Bambouchine
+  "18": "s6", "19": "s6", "20": "s6", "21": "s6",  // s6 Radisson Blu
+  "22": "s7", "23": "s7", "24": "s7", "25": "s7",  // s7 LMB (Mindoubé)
 };
 
 // Cycles déterministes
@@ -687,22 +688,22 @@ export const mock33ExportStats = {
 
 // ─── GMS Promotion Mechanics ─────────────────────────────────────────────────
 // Canettes vendues par site par jour GMS (12 jours : mer→sam × 3 semaines)
-// Totaux : Mont-Bouët=305  Charbonnages=265  Port-Gentil=220  Franceville=155  Oyem=105
+// Totaux : Géant CKDO=305  Super Gros (Carrefour SNI)=265  Mbolo=220  Super gros=155  Prix import=105
 const _gmsDays = ["24 juin","25 juin","26 juin","27 juin","1 juil.","2 juil.","3 juil.","4 juil.","8 juil.","9 juil.","10 juil.","11 juil."];
 const _gmsCanByDay: [string, number[]][] = [
-  ["Mont-Bouët",   [22,24,26,28,23,25,26,27,22,24,26,32]],
-  ["Charbonnages", [19,21,23,25,20,21,22,24,19,21,23,27]],
-  ["Port-Gentil",  [15,17,19,21,16,17,19,21,15,17,20,23]],
-  ["Franceville",  [11,12,14,15,11,12,13,14,11,12,14,16]],
-  ["Oyem",         [ 7, 8, 9,10, 7, 8, 9,10, 7, 8, 9,13]],
+  ["Géant CKDO",              [22,24,26,28,23,25,26,27,22,24,26,32]],
+  ["Super Gros (Carrefour SNI)", [19,21,23,25,20,21,22,24,19,21,23,27]],
+  ["Mbolo",                   [15,17,19,21,16,17,19,21,15,17,20,23]],
+  ["Super gros",              [11,12,14,15,11,12,13,14,11,12,14,16]],
+  ["Prix import",             [ 7, 8, 9,10, 7, 8, 9,10, 7, 8, 9,13]],
 ];
 // Packs vendus par site (4 packs = 1 pack offert + 1 ticket bonus + 1 lot)
 const _gmsPacksBySite: { site: string; packs: number }[] = [
-  { site: "Mont-Bouët",   packs: 124 },
-  { site: "Charbonnages", packs: 108 },
-  { site: "Port-Gentil",  packs: 88  },
-  { site: "Franceville",  packs: 60  },
-  { site: "Oyem",         packs: 40  },
+  { site: "Géant CKDO",              packs: 124 },
+  { site: "Super Gros (Carrefour SNI)", packs: 108 },
+  { site: "Mbolo",                   packs: 88  },
+  { site: "Super gros",              packs: 60  },
+  { site: "Prix import",             packs: 40  },
 ];
 
 export const gmsPromoData = {
@@ -745,11 +746,11 @@ export const gmsPromoData = {
 // ─── CHR LBV Promotion Mechanics ─────────────────────────────────────────────
 // 3 bouteilles achetées = 1 bouteille offerte  |  9 bouteilles = 1 tirage tombola
 // 16 jours animés (matchs CdM) — Finale le 19 juillet = ticket tombola spécial
-// Totaux : Angondjé=180  Bambouchine=112
+// Totaux : Radisson Blu=180  LMB (Mindoubé)=112
 const _chrDays = ["16 juin","17 juin","18 juin","19 juin","20 juin","21 juin","22 juin","23 juin","28 juin","29 juin","30 juin","5 juil.","6 juil.","7 juil.","12 juil.","19 juil.🏆"];
 const _chrBottlesByDay: [string, number[]][] = [
-  ["Fans Zone Angondjé",    [10,10,11,11,12,13,12,11,10,10, 9,10,11,12,13,15]],
-  ["Fans Zone Bambouchine", [ 6, 7, 7, 7, 7, 7, 8, 7, 7, 6, 6, 6, 7, 8, 8, 8]],
+  ["Radisson Blu",   [10,10,11,11,12,13,12,11,10,10, 9,10,11,12,13,15]],
+  ["LMB (Mindoubé)", [ 6, 7, 7, 7, 7, 7, 8, 7, 7, 6, 6, 6, 7, 8, 8, 8]],
 ];
 
 export const chrPromoData = {

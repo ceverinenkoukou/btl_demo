@@ -62,15 +62,16 @@ interface KPI {
 }
 
 // ── GMS KPIs ─────────────────────────────────────────────────────────────────
+// Utilise les objectifs définis dans export33Campaign: free_objective=315, goodies_objective=720
 const GMS_KPIS: KPI[] = [
   {
-    label: "Ventes (canettes)",
-    icon: "🛒", value: 1050, target: 1140,
+    label: "Distributions (canettes)",
+    icon: "🛒", value: 1050, target: export33Campaign.sales_objective,
     bar: "bg-red-500",    track: "bg-red-100",    text: "text-red-700",    badge: "bg-red-50 border-red-100",
   },
   {
     label: "Canettes offertes",
-    icon: "🍺", value: gmsPromoData.canettePromo.canetteOffertes, target: 285,
+    icon: "🍺", value: gmsPromoData.canettePromo.canetteOffertes, target: export33Campaign.free_objective ?? 315,
     bar: "bg-amber-500",  track: "bg-amber-100",  text: "text-amber-700",  badge: "bg-amber-50 border-amber-100",
   },
   {
@@ -80,7 +81,7 @@ const GMS_KPIS: KPI[] = [
   },
   {
     label: "Goodies distribués",
-    icon: "🎁", value: gmsPromoData.packPromo.goodiesGagnés, target: 120,
+    icon: "🎁", value: gmsPromoData.packPromo.goodiesGagnés, target: export33Campaign.goodies_objective ?? 720,
     bar: "bg-violet-500", track: "bg-violet-100", text: "text-violet-700", badge: "bg-violet-50 border-violet-100",
   },
   {
@@ -95,7 +96,7 @@ const GMS_KPIS: KPI[] = [
 // ── CHR KPIs ─────────────────────────────────────────────────────────────────
 const CHR_KPIS: KPI[] = [
   {
-    label: "Ventes (bouteilles)",
+    label: "Distributions (bouteilles)",
     icon: "🛒", value: 292, target: 320,
     bar: "bg-blue-500",    track: "bg-blue-100",    text: "text-blue-700",    badge: "bg-blue-50 border-blue-100",
   },
@@ -105,10 +106,15 @@ const CHR_KPIS: KPI[] = [
     bar: "bg-emerald-500", track: "bg-emerald-100", text: "text-emerald-700", badge: "bg-emerald-50 border-emerald-100",
   },
   {
-    label: "Goodies distribués",
-    icon: "🎁", value: chrPromoData.bouteillePromo.tiragesTombola, target: 35,
-    bar: "bg-amber-500",   track: "bg-amber-100",   text: "text-amber-700",   badge: "bg-amber-50 border-amber-100",
+    label: "Tickets tombola distribués",
+    icon: "🎟️", value: chrPromoData.bouteillePromo.tiragesTombola, target: 35,
+    bar: "bg-pink-500",    track: "bg-pink-100",    text: "text-pink-700",    badge: "bg-pink-50 border-pink-100",
   },
+  // {
+  //   label: "Tirages gagnants",
+  //   icon: "�", value: Math.floor(chrPromoData.bouteillePromo.tiragesTombola * 0.3), target: 10,
+  //   bar: "bg-violet-500",  track: "bg-violet-100",  text: "text-violet-700",  badge: "bg-violet-50 border-violet-100",
+  // },
 ];
 
 // ── Per-site data ─────────────────────────────────────────────────────────────
@@ -146,8 +152,8 @@ interface Activity {
   dotBg: string; textColor: string; badgeBg: string;
 }
 
-const GMS_SITES = ["Mont-Bouët", "Charbonnages", "Port-Gentil", "Franceville", "Oyem"];
-const CHR_SITES = ["Fans Zone Angondjé", "Fans Zone Bambouchine"];
+const GMS_SITES = ["Géant CKDO", "Super Gros (Carrefour SNI)", "Mbolo", "Super gros", "Prix import"];
+const CHR_SITES = ["Radisson Blu", "LMB (Mindoubé)"];
 
 const GMS_POOL = [
   { label: "Canette offerte",      icon: "🍺", dotBg: "bg-amber-500",  textColor: "text-amber-700",  badgeBg: "bg-amber-50"  },
@@ -385,7 +391,7 @@ export default function CompanyCampaignDetailPage() {
           </div>
           Avancement des objectifs promo
           <span className="ml-auto text-xs text-muted-foreground font-normal">
-            Objectifs calculés sur la base de {isGMS ? "1 140" : "320"} ventes
+            Objectifs calculés sur la base de {isGMS ? "1 140" : "320"} Distributions
           </span>
         </h2>
         <div className="space-y-5">

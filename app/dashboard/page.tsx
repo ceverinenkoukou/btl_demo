@@ -159,13 +159,13 @@ export default function DashboardPage() {
         .map(c => {
           const t   = mockTastings.filter(x => x.campaign_id === c.id).length;
           const s   = mockSales.filter(x => x.campaign_id === c.id).length;
-          const tPct = c.tasting_objective > 0 ? Math.round((t / c.tasting_objective) * 100) : 0;
+          const tPct = (c.tasting_objective ?? 0) > 0 ? Math.round((t / (c.tasting_objective ?? 1)) * 100) : 0;
           const sPct = c.sales_objective   > 0 ? Math.round((s / c.sales_objective)   * 100) : 0;
           return {
             id: c.id, name: c.name,
             company: (c.company as { name: string } | undefined)?.name ?? "",
             status: c.status,
-            tastings: t, tastingObjective: c.tasting_objective, tastingPct: tPct,
+            tastings: t, tastingObjective: c.tasting_objective ?? 0, tastingPct: tPct,
             sales:    s, salesObjective:   c.sales_objective,   salesPct:   sPct,
           };
         })
@@ -194,7 +194,7 @@ export default function DashboardPage() {
   const statCards = [
     { title: "Campagnes actives",    value: stats?.activeCampaigns ?? 0, icon: <Target className="w-6 h-6" />,        trend: "+2",    trendUp: true },
     { title: "Dégustations",         value: stats?.totalTastings ?? 0,   icon: <UtensilsCrossed className="w-6 h-6" />,trend: "+12%",  trendUp: true },
-    { title: "Ventes",               value: stats?.totalSales ?? 0,      icon: <ShoppingCart className="w-6 h-6" />,   trend: "+8%",   trendUp: true },
+    { title: "Distributions",               value: stats?.totalSales ?? 0,      icon: <ShoppingCart className="w-6 h-6" />,   trend: "+8%",   trendUp: true },
     { title: "Taux de conversion",   value: `${stats?.conversionRate ?? 0}%`, icon: <TrendingUp className="w-6 h-6" />,trend: "+2.5%", trendUp: true },
   ];
 
@@ -322,7 +322,7 @@ export default function DashboardPage() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-                        <ShoppingCart className="w-3 h-3" /> Ventes
+                        <ShoppingCart className="w-3 h-3" /> Distributions
                       </span>
                       <span className="text-xs font-bold">
                         <span className={c.salesPct < 30 ? "text-rose-600" : c.salesPct < 70 ? "text-amber-600" : "text-lime-600"}>{c.sales}</span>
@@ -380,7 +380,7 @@ export default function DashboardPage() {
                     fill={`url(#${g1})`} name="Dégustations" dot={false}
                     activeDot={{ r: 6, fill: theme.chart1, stroke: "#fff", strokeWidth: 2 }} />
                   <Area type="monotone" dataKey="sales" stroke={theme.chart2} strokeWidth={3}
-                    fill={`url(#${g2})`} name="Ventes" dot={false}
+                    fill={`url(#${g2})`} name="Distributions" dot={false}
                     activeDot={{ r: 6, fill: theme.chart2, stroke: "#fff", strokeWidth: 2 }} />
                 </AreaChart>
               </ResponsiveContainer>
@@ -392,7 +392,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: theme.chart2 }} />
-                <span className="text-xs text-muted-foreground font-medium">Ventes</span>
+                <span className="text-xs text-muted-foreground font-medium">Distributions</span>
               </div>
             </div>
           </CardContent>
@@ -400,7 +400,7 @@ export default function DashboardPage() {
 
         <Card className="border-0 shadow-lg shadow-slate-100 rounded-2xl">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base font-semibold">Répartition des ventes</CardTitle>
+            <CardTitle className="text-base font-semibold">Répartition des Distributions</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-48">
@@ -464,7 +464,7 @@ export default function DashboardPage() {
                 <div className={`text-3xl font-bold mt-1 ${theme.revText}`}>
                   {new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF", maximumFractionDigits: 0 }).format(stats?.totalRevenue ?? 0)}
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">total des ventes</p>
+                <p className="text-sm text-muted-foreground mt-1">total des Distributions</p>
               </div>
               <div className={`w-16 h-16 bg-gradient-to-br ${theme.revIconGrad} rounded-2xl flex items-center justify-center shadow-lg ${theme.revShadow}`}>
                 <TrendingUp className="w-8 h-8 text-white" />

@@ -192,7 +192,7 @@ export default function StatsPage() {
     const summaryData = [
       ["Statistiques", "Valeur"],
       ["Total dégustations", stats.totalTastings],
-      ["Total ventes", stats.totalSales],
+      ["Total Distributions", stats.totalSales],
       ["Chiffre d'affaires", stats.totalRevenue],
       ["Taux de conversion", `${stats.conversionRate}%`],
       ["Note moyenne", stats.avgRating],
@@ -256,7 +256,7 @@ export default function StatsPage() {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
               { icon: "🍷", label: "Dégustations",    value: stats.totalTastings,      sub: ""             },
-              { icon: "🛒", label: "Ventes",           value: stats.totalSales,         sub: ""             },
+              { icon: "🛒", label: "Distributions",           value: stats.totalSales,         sub: ""             },
               { icon: "📈", label: "Conversion",       value: `${stats.conversionRate}%`, sub: ""           },
               { icon: "⭐", label: "Note moyenne",     value: `${stats.avgRating}/5`,   sub: ""             },
               { icon: "💰", label: "Chiffre d'aff.",  value: fmt(stats.totalRevenue),  sub: ""             },
@@ -296,7 +296,7 @@ export default function StatsPage() {
                   <Line type="monotone" dataKey="tastings" stroke={CHART_ORANGE} strokeWidth={2.5}
                     dot={{ fill: CHART_ORANGE, r: 4 }} activeDot={{ r: 6 }} name="Dégustations" />
                   <Line type="monotone" dataKey="sales" stroke={CHART_PURPLE} strokeWidth={2.5}
-                    dot={{ fill: CHART_PURPLE, r: 4 }} activeDot={{ r: 6 }} name="Ventes" />
+                    dot={{ fill: CHART_PURPLE, r: 4 }} activeDot={{ r: 6 }} name="Distributions" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -323,7 +323,7 @@ export default function StatsPage() {
                   <Tooltip content={<ChartTooltip />} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="tastings" fill={CHART_ORANGE} name="Dégustations" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="sales"    fill={CHART_PURPLE} name="Ventes"        radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="sales"    fill={CHART_PURPLE} name="Distributions"        radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
