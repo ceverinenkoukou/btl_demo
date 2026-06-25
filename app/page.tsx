@@ -123,7 +123,7 @@ export default function HomePage() {
             <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-3xl p-8 lg:p-12">
               <div className="grid grid-cols-2 gap-4">
                 <StatCard value="98%" label="Taux de saisie" />
-                <StatCard value="+45%" label="Conversion" />
+                {/* <StatCard value="+45%" label="Conversion" /> */}
                 <StatCard value="2min" label="Temps moyen" />
                 <StatCard value="24/7" label="Disponibilité" />
               </div>

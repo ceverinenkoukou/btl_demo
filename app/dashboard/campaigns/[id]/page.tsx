@@ -740,10 +740,10 @@ export default function CampaignDetailPage() {
                           <span className="text-sm text-green-700">🍺 Canettes offertes</span>
                           <span className={cn("text-2xl font-bold", (promoGains.canettesOffertes ?? 0) > 0 ? "text-amber-600" : "text-slate-300")}>{promoGains.canettesOffertes ?? 0}</span>
                         </div>
-                        <div className="flex items-center justify-between">
+                        {/* <div className="flex items-center justify-between">
                           <span className="text-sm text-green-700">🎟 Tickets tombola</span>
                           <span className={cn("text-2xl font-bold", (promoGains.ticketsTombola ?? 0) > 0 ? "text-pink-600" : "text-slate-300")}>{promoGains.ticketsTombola ?? 0}</span>
-                        </div>
+                        </div> */}
                       </>)}
                       {isGMSCampaign && gmsPromoType === "packs" && (<>
                         <div className="flex items-center justify-between">
@@ -883,28 +883,205 @@ export default function CampaignDetailPage() {
         </div>
       )}
 
-      {/* ── Supervisor/manager simple progress ── */}
-      {!isAdmin && !isHostess && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
-          <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
-              <Target className="w-3.5 h-3.5 text-teal-600" />
-            </div>
-            Suivi de la campagne
-          </h3>
-          {!isGMSCampaign && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Dégustations enregistrées</span>
-                <span className="font-semibold">{allTastings.length} / {campaign.tasting_objective ?? 0}</span>
+      {/* ── Supervisor/manager dashboard ── */}
+      {!isAdmin && !isHostess && (() => {
+        const mySiteIds = Array.from(new Set(
+          teamMembers
+            .filter(m => m.user_id === user?.id && m.role === "supervisor" && m.site_id)
+            .map(m => m.site_id as string)
+        ));
+        const hasSites = mySiteIds.length > 0;
+        const mySites = hasSites ? (campaign.sites ?? []).filter(s => mySiteIds.includes(s.id)) : [];
+
+        const myHostesses = hasSites
+          ? teamMembers.filter(m => m.role === "hostess" && mySiteIds.includes(m.site_id ?? ""))
+          : teamMembers.filter(m => m.role === "hostess");
+
+        const scopedTastings = hasSites ? allTastings.filter(t => mySiteIds.includes(t.site_id ?? "")) : allTastings;
+        const scopedSales    = hasSites ? allSales.filter(s => mySiteIds.includes(s.site_id ?? "")) : allSales;
+
+        const scopedRevenue   = scopedSales.reduce((sum, s) => sum + s.total_amount, 0);
+        const scopedValidated = scopedSales.filter(s => s.validated).length;
+        const scopedQty       = scopedSales.reduce((sum, s) => sum + s.quantity, 0);
+        const scopedTastingPct = (campaign.tasting_objective ?? 0) > 0
+          ? Math.min(100, Math.round((scopedTastings.length / (campaign.tasting_objective ?? 1)) * 100))
+          : 0;
+        const scopedSalesPct = campaign.sales_objective > 0
+          ? Math.min(100, Math.round((scopedSales.length / campaign.sales_objective) * 100))
+          : 0;
+        const scopedGains = isPromoCampaign ? computePromoGains(id, scopedQty, "canettes") : null;
+
+        const hostessRanking = myHostesses.map(m => {
+          const hSales    = scopedSales.filter(s => s.hostess_id === m.user_id);
+          const hTastings = scopedTastings.filter(t => t.hostess_id === m.user_id);
+          const site = (campaign.sites ?? []).find(s => s.id === m.site_id);
+          return {
+            id: m.user_id,
+            name: m.user?.full_name ?? "—",
+            site: site?.name,
+            tastings: hTastings.length,
+            sales: hSales.length,
+            revenue: hSales.reduce((sum, s) => sum + s.total_amount, 0),
+          };
+        }).sort((a, b) => b.revenue - a.revenue);
+
+        return (
+          <div className="space-y-5">
+            {/* Vue d'ensemble */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-5">
+              <h3 className="font-semibold text-sm text-foreground flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
+                  <Target className="w-3.5 h-3.5 text-teal-600" />
+                </div>
+                Suivi de la campagne{hasSites ? " — sites sous ma responsabilité" : ""}
+              </h3>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {!isGMSCampaign && (
+                  <div className="bg-teal-50 rounded-xl p-3.5 border border-teal-100">
+                    <div className="flex items-center gap-1.5 mb-1">
+                      <UtensilsCrossed className="w-3.5 h-3.5 text-teal-600" />
+                      <span className="text-xs text-teal-700 font-medium">Dégustations</span>
+                    </div>
+                    <div className="text-xl font-bold text-teal-800">
+                      {scopedTastings.length}<span className="text-xs font-normal text-teal-500 ml-1">/ {campaign.tasting_objective ?? 0}</span>
+                    </div>
+                  </div>
+                )}
+                <div className="bg-emerald-50 rounded-xl p-3.5 border border-emerald-100">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <ShoppingCart className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-xs text-emerald-700 font-medium">Distributions</span>
+                  </div>
+                  <div className="text-xl font-bold text-emerald-800">
+                    {scopedSales.length}<span className="text-xs font-normal text-emerald-500 ml-1">/ {campaign.sales_objective}</span>
+                  </div>
+                </div>
+                <div className="bg-blue-50 rounded-xl p-3.5 border border-blue-100">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
+                    <span className="text-xs text-blue-700 font-medium">Goodies</span>
+                  </div>
+                  <div className="text-xl font-bold text-blue-800">
+                    {scopedValidated}<span className="text-xs font-normal text-blue-500 ml-1">/ {scopedSales.length}</span>
+                  </div>
+                </div>
+                {/* <div className="bg-violet-50 rounded-xl p-3.5 border border-violet-100">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <TrendingUp className="w-3.5 h-3.5 text-violet-600" />
+                    <span className="text-xs text-violet-700 font-medium">Chiffre d&apos;aff.</span>
+                  </div>
+                  <div className="text-xl font-bold text-violet-800">{scopedRevenue.toFixed(0)} €</div>
+                </div> */}
               </div>
-              <div className="h-3 rounded-full bg-teal-50 overflow-hidden shadow-inner">
-                <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-700" style={{ width: `${tastingPct}%` }} />
+
+              <div className="space-y-3 pt-2 border-t border-slate-100">
+                {!isGMSCampaign && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <span>Dégustations</span>
+                      <span className="font-semibold text-teal-700">{scopedTastingPct}%</span>
+                    </div>
+                    <div className="h-2.5 rounded-full bg-teal-50 overflow-hidden shadow-inner">
+                      <div className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-700" style={{ width: `${scopedTastingPct}%` }} />
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Distributions</span>
+                    <span className="font-semibold text-emerald-700">{scopedSalesPct}%</span>
+                  </div>
+                  <div className="h-2.5 rounded-full bg-emerald-50 overflow-hidden shadow-inner">
+                    <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-700" style={{ width: `${scopedSalesPct}%` }} />
+                  </div>
+                </div>
               </div>
+
+              {scopedGains && (
+                <div className="rounded-xl bg-amber-50 border border-amber-200 p-3.5 flex flex-wrap gap-4">
+                  {isGMSCampaign ? (
+                    <>
+                      <span className="text-xs text-amber-800">🍺 Canettes offertes : <strong>{scopedGains.canettesOffertes ?? 0}</strong></span>
+                      <span className="text-xs text-amber-800">🎟 Tickets tombola : <strong>{scopedGains.ticketsTombola ?? 0}</strong></span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-xs text-amber-800">🍾 Bouteilles offertes : <strong>{scopedGains.bouteillesOffertes ?? 0}</strong></span>
+                      <span className="text-xs text-amber-800">🎟 Tirages tombola : <strong>{scopedGains.tirages ?? 0}</strong></span>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      )}
+
+            {/* Sites supervisés */}
+            {hasSites && mySites.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                <h3 className="font-semibold text-sm text-foreground flex items-center gap-2 mb-4">
+                  <div className="w-6 h-6 rounded-lg bg-indigo-100 flex items-center justify-center shrink-0">
+                    <MapPin className="w-3.5 h-3.5 text-indigo-600" />
+                  </div>
+                  Mes points de vente ({mySites.length})
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {mySites.map(site => {
+                    const siteTastings = allTastings.filter(t => t.site_id === site.id);
+                    const siteSales = allSales.filter(s => s.site_id === site.id);
+                    const siteHostesses = teamMembers.filter(m => m.role === "hostess" && m.site_id === site.id);
+                    const siteRevenue = siteSales.reduce((sum, s) => sum + s.total_amount, 0);
+                    return (
+                      <div key={site.id} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-semibold text-foreground">{site.name}</span>
+                          <span className="text-xs text-muted-foreground">{siteHostesses.length} hôtesse{siteHostesses.length > 1 ? "s" : ""}</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          {!isGMSCampaign && <span>{siteTastings.length} dégust.</span>}
+                          <span>{siteSales.length} ventes</span>
+                          <span className="font-semibold text-foreground">{siteRevenue.toFixed(0)} €</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Classement des hôtesses */}
+            {hostessRanking.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                <h3 className="font-semibold text-sm text-foreground flex items-center gap-2 mb-4">
+                  <div className="w-6 h-6 rounded-lg bg-rose-100 flex items-center justify-center shrink-0">
+                    <Users className="w-3.5 h-3.5 text-rose-600" />
+                  </div>
+                  Performance des hôtesses
+                </h3>
+                <div className="space-y-2">
+                  {hostessRanking.map((h, i) => (
+                    <div key={h.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl hover:bg-rose-50/60 transition-colors">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm">
+                        {i + 1}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-semibold text-foreground">{h.name}</span>
+                          {h.site && <span className="text-xs text-muted-foreground">· {h.site}</span>}
+                        </div>
+                        <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
+                          {!isGMSCampaign && <span>{h.tastings} dégust.</span>}
+                          <span>{h.sales} ventes</span>
+                        </div>
+                      </div>
+                      {/* <span className="text-sm font-bold text-emerald-700 shrink-0">{h.revenue.toFixed(0)} €</span> */}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }

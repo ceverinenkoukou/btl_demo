@@ -259,7 +259,7 @@ export default function StatsPage() {
               { icon: "🛒", label: "Distributions",           value: stats.totalSales,         sub: ""             },
               { icon: "📈", label: "Conversion",       value: `${stats.conversionRate}%`, sub: ""           },
               { icon: "⭐", label: "Note moyenne",     value: `${stats.avgRating}/5`,   sub: ""             },
-              { icon: "💰", label: "Chiffre d'aff.",  value: fmt(stats.totalRevenue),  sub: ""             },
+              // { icon: "💰", label: "Chiffre d'aff.",  value: fmt(stats.totalRevenue),  sub: ""             },
             ].map((s, i) => (
               <div key={i} className="bg-white/18 backdrop-blur-sm rounded-xl p-3.5 border border-white/20 col-span-1">
                 <div className="text-base mb-1">{s.icon}</div>

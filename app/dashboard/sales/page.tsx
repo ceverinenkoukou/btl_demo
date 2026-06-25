@@ -292,7 +292,7 @@ export default function SalesPage() {
                   { icon: "🛒", label: "Total Distributions",     value: stats.total,          sub: "enregistrées" },
                   { icon: "✅", label: "Validées",          value: stats.validated,      sub: "confirmées"   },
                   { icon: "⏳", label: "En attente",        value: stats.pending,        sub: "à valider"    },
-                  { icon: "💰", label: "Chiffre d'aff.",    value: fmt(stats.revenue),   sub: ""             },
+                  // { icon: "💰", label: "Chiffre d'aff.",    value: fmt(stats.revenue),   sub: ""             },
                 ].map((s, i) => (
                   <div key={i} className="bg-white/15 backdrop-blur-sm rounded-xl p-3.5 border border-white/20">
                     <div className="text-base mb-1">{s.icon}</div>

@@ -140,7 +140,7 @@ export default function CompanyDashboardPage() {
     const rows = gmsPromoData.sitePerDay.flatMap(d =>
       d.sites.map(s => ({
         Date: d.date, Site: s.site,
-        "Canettes vendues": s.canettes, "Canettes offertes": s.offertes, "Tickets tombola": s.tickets,
+        "Canettes vendues": s.canettes, "Canettes offertes": s.offertes, "Tirage": s.tickets,
       }))
     );
     downloadCSV(rows, "GMS_33Export_par_jour.csv");
@@ -383,7 +383,7 @@ export default function CompanyDashboardPage() {
           <div className="space-y-4">
             <PromoProgressRow label="Canettes offertes" current={262} target={285} colorBar="bg-amber-500" colorText="text-amber-600" trackColor="bg-amber-100" />
             <PromoProgressRow label="Goodies distribués" current={105} target={120} colorBar="bg-violet-500" colorText="text-violet-600" trackColor="bg-violet-100" />
-            <PromoProgressRow label="Tickets tombola" current={175} target={190} colorBar="bg-red-500" colorText="text-red-600" trackColor="bg-red-100" />
+            <PromoProgressRow label="Tirage" current={175} target={190} colorBar="bg-red-500" colorText="text-red-600" trackColor="bg-red-100" />
           </div>
         </div>
         {/* CHR */}
@@ -637,13 +637,13 @@ export default function CompanyDashboardPage() {
                     }}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5">{fmtXOF(p.revenue)}</p>
+                {/* <p className="text-xs text-muted-foreground mt-0.5">{fmtXOF(p.revenue)}</p> */}
               </div>
             ))}
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+            {/* <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
               <span className="text-sm text-muted-foreground font-medium">Total CA</span>
               <span className="text-base font-bold text-foreground">{fmtXOF(stats.totalRevenue)}</span>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
@@ -694,7 +694,7 @@ export default function CompanyDashboardPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
             {[
               { label: "Packs vendus",     value: gmsPromoData.packPromo.packsSold,     color: "text-red-700",    bg: "bg-red-50 border-red-100"    },
-              { label: "Tickets tombola",  value: gmsPromoData.packPromo.ticketsOfferts, color: "text-amber-700",  bg: "bg-amber-50 border-amber-100"  },
+              // { label: "Tirage",  value: gmsPromoData.packPromo.ticketsOfferts, color: "text-amber-700",  bg: "bg-amber-50 border-amber-100"  },
               { label: "Packs offerts",    value: gmsPromoData.packPromo.packsOfferts,  color: "text-orange-700", bg: "bg-orange-50 border-orange-100" },
               { label: "Goodies gagnés",   value: gmsPromoData.packPromo.goodiesGagnés, color: "text-violet-700", bg: "bg-violet-50 border-violet-100" },
             ].map((k, i) => (
@@ -731,7 +731,7 @@ export default function CompanyDashboardPage() {
             {[
               { label: "Canettes vendues",  value: gmsPromoData.canettePromo.canettesVendues, color: "text-amber-700",  bg: "bg-amber-50 border-amber-100"  },
               { label: "Canettes offertes", value: gmsPromoData.canettePromo.canetteOffertes, color: "text-orange-700", bg: "bg-orange-50 border-orange-100" },
-              { label: "Tickets tombola",   value: gmsPromoData.canettePromo.ticketsTombola,  color: "text-red-700",   bg: "bg-red-50 border-red-100"    },
+              { label: "Tirage",   value: gmsPromoData.canettePromo.ticketsTombola,  color: "text-red-700",   bg: "bg-red-50 border-red-100"    },
             ].map((k, i) => (
               <div key={i} className={`rounded-xl p-3 border text-center ${k.bg}`}>
                 <p className={`text-2xl font-bold ${k.color}`}>{fmt(k.value)}</p>
@@ -748,7 +748,7 @@ export default function CompanyDashboardPage() {
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
                 <Bar dataKey="canettes" name="Canettes vendues"  fill={AMBER}     radius={[3,3,0,0]} />
                 <Bar dataKey="offertes" name="Canettes offertes" fill="#F97316"   radius={[3,3,0,0]} />
-                <Bar dataKey="tickets"  name="Tickets tombola"   fill={RED}       radius={[3,3,0,0]} />
+                <Bar dataKey="tickets"  name="Tirage"   fill={RED}       radius={[3,3,0,0]} />
                 <Legend wrapperStyle={{ fontSize: "10px", paddingTop: "6px" }} />
               </BarChart>
             </ResponsiveContainer>
@@ -822,7 +822,7 @@ export default function CompanyDashboardPage() {
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
                 <Bar dataKey="canettes" name="Canettes vendues"  fill={AMBER}   radius={[3,3,0,0]} />
                 <Bar dataKey="offertes" name="Canettes offertes" fill="#F97316" radius={[3,3,0,0]} />
-                <Bar dataKey="tickets"  name="Tickets tombola"   fill={RED}     radius={[3,3,0,0]} />
+                <Bar dataKey="tickets"  name="Tirage"   fill={RED}     radius={[3,3,0,0]} />
                 <Legend wrapperStyle={{ fontSize: "10px", paddingTop: "4px" }} />
               </BarChart>
             </ResponsiveContainer>
@@ -847,7 +847,7 @@ export default function CompanyDashboardPage() {
             <p className="font-semibold text-sm text-foreground">Écoulement Bouteilles 65cl</p>
           </div>
           <p className="text-xs text-muted-foreground mb-4 ml-6">
-            3 bouteilles achetées = 1 bouteille offerte · 9 bouteilles = 1 tirage tombola · Finale = 1 ticket tombola spécial
+            3 bouteilles achetées = 1 bouteille offerte · 9 bouteilles = 1 tirage  · Finale = 1 ticket tombola spécial
           </p>
 
           {/* KPI chips */}

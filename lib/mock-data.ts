@@ -359,7 +359,7 @@ export const export33Campaign: Campaign = {
   id: "3",
   company_id: "2",
   name: "Animation 33 Export GMS",
-  description: "Animation GMS – Achat avec gain sur la 33 Export CAN 33cl. 4 CAN achetées = 1 CAN offerte / 6 CAN achetées = 1 tirage. Du mercredi au samedi, 24 Juin au 11 Juillet (12 jours animés). 10 Hôtesses VAC sur 5 PDV.",
+  description: "Animation GMS – Achat avec gain sur la 33 Export CAN 33cl. 4 CAN achetées = 1 CAN offerte / 6 CAN achetées = 1 tirage. 10 Hôtesses VAC sur 5 PDV.",
   location_details: "5 PDV : Géant CKDO, Super Gros (Carrefour SNI), Mbolo, Super gros, Prix import",
   sales_objective: 1140,
   free_objective: 315 ,

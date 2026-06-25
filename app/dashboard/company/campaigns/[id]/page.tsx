@@ -84,13 +84,13 @@ const GMS_KPIS: KPI[] = [
     icon: "🎁", value: gmsPromoData.packPromo.goodiesGagnés, target: export33Campaign.goodies_objective ?? 720,
     bar: "bg-violet-500", track: "bg-violet-100", text: "text-violet-700", badge: "bg-violet-50 border-violet-100",
   },
-  {
-    label: "Tickets tombola",
-    icon: "🎟️",
-    value: gmsPromoData.packPromo.ticketsOfferts + gmsPromoData.canettePromo.ticketsTombola,
-    target: 700,
-    bar: "bg-pink-500",   track: "bg-pink-100",   text: "text-pink-700",   badge: "bg-pink-50 border-pink-100",
-  },
+  // {
+  //   label: "Tickets tombola",
+  //   icon: "🎟️",
+  //   value: gmsPromoData.packPromo.ticketsOfferts + gmsPromoData.canettePromo.ticketsTombola,
+  //   target: 700,
+  //   bar: "bg-pink-500",   track: "bg-pink-100",   text: "text-pink-700",   badge: "bg-pink-50 border-pink-100",
+  // },
 ];
 
 // ── CHR KPIs ─────────────────────────────────────────────────────────────────
@@ -105,11 +105,11 @@ const CHR_KPIS: KPI[] = [
     icon: "🍾", value: chrPromoData.bouteillePromo.bouteillesOffertes, target: 106,
     bar: "bg-emerald-500", track: "bg-emerald-100", text: "text-emerald-700", badge: "bg-emerald-50 border-emerald-100",
   },
-  {
-    label: "Tickets tombola distribués",
-    icon: "🎟️", value: chrPromoData.bouteillePromo.tiragesTombola, target: 35,
-    bar: "bg-pink-500",    track: "bg-pink-100",    text: "text-pink-700",    badge: "bg-pink-50 border-pink-100",
-  },
+  // {
+  //   label: "Tickets tombola distribués",
+  //   icon: "🎟️", value: chrPromoData.bouteillePromo.tiragesTombola, target: 35,
+  //   bar: "bg-pink-500",    track: "bg-pink-100",    text: "text-pink-700",    badge: "bg-pink-50 border-pink-100",
+  // },
   // {
   //   label: "Tirages gagnants",
   //   icon: "�", value: Math.floor(chrPromoData.bouteillePromo.tiragesTombola * 0.3), target: 10,

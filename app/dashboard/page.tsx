@@ -193,9 +193,9 @@ export default function DashboardPage() {
 
   const statCards = [
     { title: "Campagnes actives",    value: stats?.activeCampaigns ?? 0, icon: <Target className="w-6 h-6" />,        trend: "+2",    trendUp: true },
-    { title: "Dégustations",         value: stats?.totalTastings ?? 0,   icon: <UtensilsCrossed className="w-6 h-6" />,trend: "+12%",  trendUp: true },
+    { title: "Goodies distribués",         value: stats?.totalTastings ?? 0,   icon: <UtensilsCrossed className="w-6 h-6" />,trend: "+12%",  trendUp: true },
     { title: "Distributions",               value: stats?.totalSales ?? 0,      icon: <ShoppingCart className="w-6 h-6" />,   trend: "+8%",   trendUp: true },
-    { title: "Taux de conversion",   value: `${stats?.conversionRate ?? 0}%`, icon: <TrendingUp className="w-6 h-6" />,trend: "+2.5%", trendUp: true },
+    // { title: "Taux de conversion",   value: `${stats?.conversionRate ?? 0}%`, icon: <TrendingUp className="w-6 h-6" />,trend: "+2.5%", trendUp: true },
   ];
 
   const tooltipStyle = {
@@ -296,10 +296,10 @@ export default function DashboardPage() {
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {/* Tastings */}
-                  <div>
+                  {/* <div>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-                        <UtensilsCrossed className="w-3 h-3" /> Dégustations
+                        <UtensilsCrossed className="w-3 h-3" /> Goodies d
                       </span>
                       <span className="text-xs font-bold">
                         <span className={c.tastingPct < 30 ? "text-rose-600" : c.tastingPct < 70 ? "text-amber-600" : "text-lime-600"}>{c.tastings}</span>
@@ -317,7 +317,7 @@ export default function DashboardPage() {
                     <p className={`text-xs mt-0.5 font-semibold ${
                       c.tastingPct < 30 ? "text-rose-500" : c.tastingPct < 70 ? "text-amber-500" : "text-lime-600"
                     }`}>{c.tastingPct}%</p>
-                  </div>
+                  </div> */}
                   {/* Sales */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
@@ -388,7 +388,7 @@ export default function DashboardPage() {
             <div className="flex items-center gap-6 mt-3 justify-center">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: theme.chart1 }} />
-                <span className="text-xs text-muted-foreground font-medium">Dégustations</span>
+                <span className="text-xs text-muted-foreground font-medium">Goodies distribués</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: theme.chart2 }} />
@@ -456,7 +456,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className={`border-0 shadow-lg shadow-slate-100 rounded-2xl overflow-hidden bg-gradient-to-br ${theme.revBg}`}>
+        {/* <Card className={`border-0 shadow-lg shadow-slate-100 rounded-2xl overflow-hidden bg-gradient-to-br ${theme.revBg}`}>
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -482,7 +482,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );
